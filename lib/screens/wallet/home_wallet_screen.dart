@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:solana_wallet/screens/wallet/airdrop.dart';
 
 import '../../models/User.dart';
 import '../../services/auth_provider.dart';
@@ -49,13 +50,13 @@ class HomeWalletScreen extends StatelessWidget {
                 const SizedBox(width: 10,),
                 Expanded(
                   child: CustomButton(
-                  text: 'Swap',
+                  text: 'Airdrop',
                   backgroundImage: 'assets/images/redButton.jpg',
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const TransferBalance()),
+                          builder: (context) => const Airdrop()),
                     );
                   },
                 )

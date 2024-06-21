@@ -7,7 +7,7 @@ class CustomTextField extends StatefulWidget {
 
   const CustomTextField({
     required this.hintText,
-    required this.obscureText, 
+    required this.obscureText,
     required this.controller,
   });
 
@@ -18,6 +18,7 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   bool _isObscured = true;
   bool _isFocused = false;
+  bool _isValid = true;
   late FocusNode _focusNode;
 
   @override
@@ -29,12 +30,20 @@ class _CustomTextFieldState extends State<CustomTextField> {
         _isFocused = _focusNode.hasFocus;
       });
     });
+    widget.controller.addListener(_validate);
   }
 
   @override
   void dispose() {
     _focusNode.dispose();
+    widget.controller.removeListener(_validate);
     super.dispose();
+  }
+
+  void _validate() {
+    setState(() {
+      _isValid = widget.controller.text.isNotEmpty;
+    });
   }
 
   @override
@@ -50,12 +59,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
         fillColor: Colors.grey[200],
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.0),
-          borderSide: BorderSide.none
+          borderSide: BorderSide(
+            color: _isValid ? Colors.transparent : Colors.red,
+            width: 1.0,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.0),
-          borderSide: const BorderSide(
-            color: Colors.black,
+          borderSide: BorderSide(
+            color: _isValid ? Colors.black : Colors.red,
             width: 1.0,
           ),
         ),
@@ -73,6 +85,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
               )
             : null,
       ),
+      onChanged: (text) {
+        _validate();
+      },
     );
   }
 }

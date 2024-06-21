@@ -113,4 +113,36 @@ class WalletProvider with ChangeNotifier {
       throw Exception('Failed to transfer balance: $error');
     }
   }
+
+  Future<void> requestAirdrop({
+    required String walletAddress,
+    required int amount,
+  }) async {
+    final url = Uri.parse('$baseUri/solana/wallet/airdrop');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Flic-Token': _token!,
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "wallet_address": walletAddress,
+          "network": "devnet",
+          "amount": amount
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('Airdrop successful: $responseData');
+      } else {
+        throw Exception(
+            'Failed to request airdrop. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Failed to request airdrop: $error');
+    }
+  }
 }

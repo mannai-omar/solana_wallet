@@ -48,15 +48,13 @@ class _LoginState extends State<Login> {
             MaterialPageRoute(builder: (context) => const WelcomeScreen()),
           );
         }
-      } else {
-        throw Exception('User not found');
-      }
+      } 
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to login: $error'),
-        ),
-      );
+      SnackBar(
+        content: Text('$error'),
+      ),
+    );
     } finally {
       setState(() {
         _isLoading = false;
