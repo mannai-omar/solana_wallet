@@ -1,0 +1,1 @@
+String baseUri = 'https://api.socialverseapp.com';
