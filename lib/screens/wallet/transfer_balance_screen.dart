@@ -18,6 +18,7 @@ class TransferBalance extends StatefulWidget {
 class _TransferBalanceState extends State<TransferBalance> {
   final TextEditingController _recipientController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
+  bool _isLoading = false;
 
   void onKeyboardTap(String value) {
     setState(() {
@@ -25,7 +26,13 @@ class _TransferBalanceState extends State<TransferBalance> {
     });
   }
 
-  void _getBalanceAndInitiateTransfer(String recipientAddress, int amount) async {
+  void _getBalanceAndInitiateTransfer(
+      String recipientAddress, int amount) async {
+    if (!_validateFields()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
     try {
       int balance = await Provider.of<WalletProvider>(context, listen: false)
           .getWalletBalance('QTA61YXry54KH5S2qJ6kPRtGt7HWtGag27MJq4nN52g');
@@ -43,12 +50,16 @@ class _TransferBalanceState extends State<TransferBalance> {
       );
       // Show success Snackbar and navigate back
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Transfer successful')),
+        const SnackBar(content: Text('Transfer successful')),
       );
       Navigator.pop(context); // Pop back to the previous screen
     } catch (error) {
-      // Handle error 
+      // Handle error
       print('Error in transfer: $error');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -90,20 +101,27 @@ class _TransferBalanceState extends State<TransferBalance> {
                 controller: _amountController,
               ),
               const SizedBox(height: 20),
-              Keyboard(),
+              keyboard(),
               const SizedBox(height: 30),
-              CustomButton(
-                text: 'Send',
-                onTap: () {
-                  // Extract amount from text field
-                  int amount = int.tryParse(_amountController.text.trim()) ?? 0;
-                  // Call method to fetch balance and initiate transfer
-                  _getBalanceAndInitiateTransfer(
-                    _recipientController.text.trim(),
-                    amount,
-                  );
-                },
-                backgroundImage: 'assets/images/send.jpg',
+              Column(
+                children: [
+                  _isLoading
+                      ? const CircularProgressIndicator()
+                      : CustomButton(
+                          text: 'Send',
+                          onTap: () {
+                            int amount =
+                                int.tryParse(_amountController.text.trim()) ??
+                                    0;
+                            // Call method to fetch balance and initiate transfer
+                            _getBalanceAndInitiateTransfer(
+                              _recipientController.text.trim(),
+                              amount,
+                            );
+                          },
+                          backgroundImage: 'assets/images/send.jpg',
+                        ),
+                ],
               )
             ],
           ),
@@ -112,7 +130,7 @@ class _TransferBalanceState extends State<TransferBalance> {
     );
   }
 
-  Container Keyboard() {
+  Container keyboard() {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[200],
@@ -127,8 +145,8 @@ class _TransferBalanceState extends State<TransferBalance> {
         rightButtonFn: () {
           if (_amountController.text.isEmpty) return;
           setState(() {
-            _amountController.text =
-                _amountController.text.substring(0, _amountController.text.length - 1);
+            _amountController.text = _amountController.text
+                .substring(0, _amountController.text.length - 1);
           });
         },
         rightButtonLongPressFn: () {
@@ -144,5 +162,31 @@ class _TransferBalanceState extends State<TransferBalance> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       ),
     );
+  }
+
+  bool _validateFields() {
+    if (_recipientController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Recipient address cannot be empty!')),
+      );
+      return false;
+    }
+
+    if (_amountController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Amount cannot be empty!')),
+      );
+      return false;
+    }
+
+    int? amount = int.tryParse(_amountController.text.trim());
+    if (amount == null || amount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid amount!')),
+      );
+      return false;
+    }
+
+    return true;
   }
 }

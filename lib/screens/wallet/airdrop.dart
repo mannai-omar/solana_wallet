@@ -15,7 +15,7 @@ class Airdrop extends StatefulWidget {
 class _AirdropState extends State<Airdrop> {
   final TextEditingController _recipientController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-
+  bool _isLoading = false;
   void onKeyboardTap(String value) {
     setState(() {
       _amountController.text = _amountController.text + value;
@@ -23,6 +23,9 @@ class _AirdropState extends State<Airdrop> {
   }
 
   Future<void> _requestAirdrop() async {
+    setState(() {
+      _isLoading=true;
+    });
     try {
       final String walletAddress = _recipientController.text.trim();
       int amount = int.tryParse(_amountController.text.trim()) ?? 0;
@@ -49,6 +52,10 @@ class _AirdropState extends State<Airdrop> {
           content: Text('Failed to request airdrop: $error'),
         ),
       );
+    }finally{
+      setState(() {
+      _isLoading=false;
+    });
     }
   }
 
@@ -91,10 +98,15 @@ class _AirdropState extends State<Airdrop> {
               const SizedBox(height: 20),
               Keyboard(),
               const SizedBox(height: 30),
-              CustomButton(
-                text: 'Send',
-                onTap: _requestAirdrop,
-                backgroundImage: 'assets/images/send.jpg',
+              Column(
+                children: [
+                  _isLoading ? const CircularProgressIndicator()
+                  :CustomButton(
+                    text: 'Send',
+                    onTap: _requestAirdrop,
+                    backgroundImage: 'assets/images/send.jpg',
+                  ),
+                ],
               )
             ],
           ),

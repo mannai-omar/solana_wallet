@@ -36,20 +36,18 @@ class _LoginState extends State<Login> {
       // Get the user object after successful login
       User? user = Provider.of<AuthProvider>(context, listen: false).user;
       user!.hasWallet=false;
-      if (user != null) {
-        if (user.hasWallet ?? false) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeWalletScreen()),
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-          );
-        }
-      } 
-    } catch (error) {
+      if (user.hasWallet ?? false) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeWalletScreen()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        );
+      }
+        } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('$error'),
@@ -115,7 +113,7 @@ class _LoginState extends State<Login> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _isLoading
-            ? CircularProgressIndicator()
+            ? const CircularProgressIndicator()
             : CustomButton(
                 text: 'Login',
                 onTap: _login,
@@ -145,7 +143,7 @@ class _LoginState extends State<Login> {
             ),
           ],
         ),
-        SizedBox(height: 20.0),
+        const SizedBox(height: 20.0),
         CustomButton(
           text: 'Sign in with Google',
           onTap: () {

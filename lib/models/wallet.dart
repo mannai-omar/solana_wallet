@@ -3,7 +3,7 @@ class Wallet {
   final String userPin;
   final String network;
   final String publicKey;
-  final List<int> secretKey;
+  final List<int> secretKey; 
 
   Wallet({
     required this.walletName,
