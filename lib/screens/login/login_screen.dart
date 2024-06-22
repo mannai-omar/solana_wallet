@@ -35,8 +35,8 @@ class _LoginState extends State<Login> {
 
       // Get the user object after successful login
       User? user = Provider.of<AuthProvider>(context, listen: false).user;
-      user!.hasWallet=false;
-      if (user.hasWallet ?? false) {
+      //user!.hasWallet=false;
+      if (user!.hasWallet == false) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeWalletScreen()),
