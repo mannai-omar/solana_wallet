@@ -2,11 +2,11 @@
 
 ## Features
 
--User Authentication: Secure login using username and password with token management using SharedPreferences.
--Wallet Creation: Ability to create a Solana wallet associated with the user account.
--Wallet Balance: Display the current balance of the user's Solana wallet.
--Airdrop Request: Functionality to request an airdrop of tokens to the user's wallet on the Solana devnet.
--Balance Transfer: Capability to transfer tokens between Solana wallets.
+- User Authentication: Secure login using username and password with token management using SharedPreferences.
+- Wallet Creation: Ability to create a Solana wallet associated with the user account.
+- Wallet Balance: Display the current balance of the user's Solana wallet.
+- Airdrop Request: Functionality to request an airdrop of tokens to the user's wallet on the Solana devnet.
+- Balance Transfer: Capability to transfer tokens between Solana wallets.
 
 ## Getting Started
 
